@@ -22,8 +22,12 @@ return new class extends Migration
             $table->string('location');
             $table->integer('nb_available_places');
             $table->string('reservation_mode');
+            $table->int('price');
+
             $table->string('status');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
             $table->foreign('categorie_id')->references('id')->on('categories')->onDelete('cascade');
 
         });
