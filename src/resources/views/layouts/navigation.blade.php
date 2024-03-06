@@ -18,7 +18,7 @@
                     </x-nav-link>
                     <!-- Ajouter d'autres liens de navigation selon les besoins -->
                     @if(Auth::user()->role == 'admin')
-                    <x-nav-link :href="route('dashboard')" >
+                    <x-nav-link :href="route('category.index')" >
                         {{ __('Categories') }}
                     </x-nav-link>
                     <x-nav-link :href="route('dashboard')" >
