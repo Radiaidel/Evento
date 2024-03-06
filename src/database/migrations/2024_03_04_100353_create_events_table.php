@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('location');
             $table->integer('nb_available_places');
             $table->string('reservation_mode');
-            $table->int('price');
+            $table->decimal('price',2);
 
             $table->string('status');
             $table->timestamps();

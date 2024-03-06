@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -26,7 +27,9 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
     Route::post('/categories', [CategoryController::class, 'store'])->name('category.store');
     Route::delete('/categories/{id}',  [CategoryController::class, 'destroy'] )->name('categories.destroy');
-    
+    Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users/{user}/block', [UserController::class, 'block'])->name('block.user');
 });
 
 

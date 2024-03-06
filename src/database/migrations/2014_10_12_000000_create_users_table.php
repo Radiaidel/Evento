@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('provider_token')->nullable();
             $table->string('reset_token')->nullable();
             $table->string('role');
+            $table->boolean('blocked')->default(false); // Ajout du champ blocked de type boolean avec une valeur par défaut de false
             $table->rememberToken();
             $table->timestamps();
         });

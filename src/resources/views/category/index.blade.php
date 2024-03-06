@@ -12,7 +12,7 @@
                 </div>
 
                 <div class="flex flex-col justify-center space-y-2">
-                    <button type="button" class="editCategory" onclick="GetButton('.editCategory','ShowEditForm')" data-category-id="{{ $category->category_id }}" data-category-name="{{ $category->category_name }}" data-category-picture="{{ URL::to('/public/' . $category->category_picture) }}">
+                    <button type="button" class="editCategory" onclick="GetButton('.editCategory','ShowEditForm')" data-category-id="{{ $category->id }}" data-category-name="{{ $category->name }}" data-category-picture="{{ asset('storage/' . $category->photo_url) }}">
                         <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 
                             <g id="SVGRepo_bgCarrier" stroke-width="0" />
@@ -90,6 +90,46 @@
             </div>
         </div>
 
+        <div id="EditCategory" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+            <div class="max-w-md mx-auto p-6 bg-white rounded-2xl shadow-md border w-3/5">
+
+                <div class="flex justify-end">
+                    <button id="closeBtnedit" class="text-gray-500 hover:text-gray-300 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                <form id="EditCategoryForm" method="POST" enctype="multipart/form-data" class="items-center space-y-4" action="{{ route('categories.update', ['id' => $category->id]) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="flex flex-row space-x-4 mt-4">
+
+                        <label for="Inputcategorypicture" class="w-20 h-12 rounded-md cursor-pointer flex items-center justify-center border border-3 border-dashed  border-gray-800" id="categorypictureedit">
+                            <svg width="35px" height="35px" viewBox="0 0 24 24" fill="none" id="PlusIcon" xmlns="http://www.w3.org/2000/svg" stroke="#e9e9e9">
+
+                                <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+
+                                <g id="SVGRepo_iconCarrier">
+                                    <path d="M6 12H18M12 6V18" stroke="#e9e9e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+
+                            </svg>
+                        </label>
+                        <!-- <input type="file" id="Inputcategorypicture" name="Inputcategorypicture" accept="image/*" class="hidden" required> -->
+                        <input type="file" id="Inputcategorypicture" name="Inputcategorypicture" accept="image/*" class="hidden" onchange="displayImage('categorypictureedit', 'Inputcategorypicture')">
+                        <input type="hidden" name="categoryId" id="categoryId">
+                        <input type="text" id="categoryNameedit" name="categoryName" placeholder="category name" class="p-2 w-full border border-2 border-gray-600 rounded-md " />
+                    </div>
+
+                    <button type="submit" id="updateCat" class="w-full rounded-md m-auto text-white bg-green-600 text-sm px-5 py-2.5">Update Category</button>
+                </form>
+
+            </div>
+        </div>
     </div>
     <script>
         function displayImage(onlabel, inInput) {
@@ -119,6 +159,42 @@
             if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
                 document.getElementById('deleteCategoryForm' + categoryId).submit();
             }
+        }
+
+        function ShowEditForm(button) {
+            document.getElementById('closeBtnedit').addEventListener('click', () => {
+                document.getElementById('EditCategory').classList.add('hidden');
+            });
+
+            var editCategoryForm = document.getElementById('EditCategoryForm');
+            var overlay = document.getElementById('EditCategory');
+            overlay.classList.remove('hidden');
+            console.log(button);
+            if (editCategoryForm) {
+                editCategoryForm.querySelector('#categoryNameedit').value = button.dataset.categoryName || '';
+                editCategoryForm.querySelector('#categoryId').value = button.dataset.categoryId || '';
+                var imageUrl = button.dataset.categoryPicture || '';
+                displayImageforEdit('categorypictureedit', imageUrl);
+                editCategoryForm.classList.remove('hidden');
+            }
+
+            function displayImageforEdit(labelid, url) {
+                const label = document.getElementById(labelid);
+
+                label.style.backgroundImage = 'url(' + url + ')';
+                label.style.backgroundSize = 'cover';
+                label.style.backgroundPosition = 'center';
+                label.style.border = 'none';
+                document.getElementById('PlusIcon').style.display = 'none';
+            }
+        }
+
+        function GetButton(classbtn, functionshow) {
+            document.querySelectorAll(classbtn).forEach(button => {
+                button.addEventListener('click', function() {
+                    window[functionshow](button);
+                });
+            });
         }
     </script>
 </x-app-layout>
