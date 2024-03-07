@@ -12,12 +12,24 @@ class UserController extends Controller
         $users = User::whereIn('role', ['organizer', 'user'])->get();
         return view('user.index', compact('users'));
     }
-    public function block(User $user)
+    public function blockUser($id)
     {
-        // Mettez ici la logique pour bloquer l'utilisateur, par exemple :
-        $user->update(['blocked' => true]);
-
-        // Rediriger ou renvoyer une réponse appropriée
-        return redirect()->route('users.index')->with('success', 'User blocked successfully');
+        $user = User::find($id);
+    
+        if ($user) {
+            if ($user->blocked) {
+                $user->blocked = false;
+                $message = 'Utilisateur débloqué avec succès.';
+            } else {
+                $user->blocked = true;
+                $message = 'Utilisateur bloqué avec succès.';
+            }
+            $user->save();
+            return redirect()->back()->with('success', $message);
+        }
+    
+        return redirect()->back()->with('error', 'Utilisateur non trouvé.');
     }
+    
+
 }

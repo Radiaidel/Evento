@@ -29,7 +29,7 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::delete('/categories/{id}',  [CategoryController::class, 'destroy'] )->name('categories.destroy');
     Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users/{user}/block', [UserController::class, 'block'])->name('block.user');
+    Route::post('/block/user/{id}', [UserController::class, 'blockUser'])->name('block.user');
 });
 
 

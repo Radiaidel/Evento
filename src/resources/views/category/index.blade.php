@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="container mx-auto p-8" x-data="{ isAddCategoryFormOpen: false }">
         <div class="text-right mb-6">
-            <button @click="isAddCategoryFormOpen = true" class="bg-green-600 text-white px-4 py-2 rounded-md">Add New Category</button>
+            <button @click="isAddCategoryFormOpen = true" class="bg-red-600 text-white px-4 py-2 rounded-md">Add New Category</button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             @foreach($categories as $category)
@@ -84,7 +84,7 @@
                         <input type="text" id="categoryName" name="categoryName" placeholder="name" class="p-2 w-full border border-2 border-gray-600 rounded-md " />
                     </div>
 
-                    <button type="submit" id="addCategoryBtn" class="w-full rounded-md m-auto text-white bg-green-600 text-sm px-5 py-2.5">Add Category</button>
+                    <button type="submit" id="addCategoryBtn" class="w-full rounded-md m-auto text-white bg-red-600 text-sm px-5 py-2.5">Add Category</button>
                 </form>
 
             </div>
@@ -125,7 +125,7 @@
                         <input type="text" id="categoryNameedit" name="categoryName" placeholder="category name" class="p-2 w-full border border-2 border-gray-600 rounded-md " />
                     </div>
 
-                    <button type="submit" id="updateCat" class="w-full rounded-md m-auto text-white bg-green-600 text-sm px-5 py-2.5">Update Category</button>
+                    <button type="submit" id="updateCat" class="w-full rounded-md m-auto text-white bg-red-600 text-sm px-5 py-2.5">Update Category</button>
                 </form>
 
             </div>

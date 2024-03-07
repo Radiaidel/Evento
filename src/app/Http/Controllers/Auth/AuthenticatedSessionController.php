@@ -29,6 +29,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = $request->user();
+
+        // Vérifier si l'utilisateur est bloqué
+        if ($user->blocked) {
+            auth()->logout();
+            return redirect()->route('login')->with('error', 'Vous n\'êtes pas autorisé à accéder au site.');
+        }
+
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
