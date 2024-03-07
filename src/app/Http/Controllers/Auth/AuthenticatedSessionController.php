@@ -36,7 +36,9 @@ class AuthenticatedSessionController extends Controller
             auth()->logout();
             return redirect()->route('login')->with('error', 'Vous n\'êtes pas autorisé à accéder au site.');
         }
-
+        if ($user->role == 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
