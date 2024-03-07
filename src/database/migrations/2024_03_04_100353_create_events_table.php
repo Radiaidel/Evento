@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('categorie_id');
+            $table->text('image_path');
 
             $table->string('title');
             $table->text('description');
@@ -22,8 +23,7 @@ return new class extends Migration
             $table->string('location');
             $table->integer('nb_available_places');
             $table->string('reservation_mode');
-            $table->decimal('price',2);
-
+            $table->decimal('price', 10, 2);
             $table->string('status');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

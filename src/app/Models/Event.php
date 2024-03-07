@@ -20,5 +20,8 @@ class Event extends Model
         'reservation_mode',
         'status',
     ];
-
+    public function organizer()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

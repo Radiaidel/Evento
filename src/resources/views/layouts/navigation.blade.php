@@ -24,7 +24,7 @@
                     <x-nav-link :href="route('users.index')" >
                         {{ __('Users') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" >
+                    <x-nav-link :href="route('events.pending')" >
                         {{ __('Events') }}
                     </x-nav-link>
                     @elseif(Auth::user()->role == 'organizer')
