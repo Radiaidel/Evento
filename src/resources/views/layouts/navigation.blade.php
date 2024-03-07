@@ -33,7 +33,7 @@
                     <x-nav-link :href="route('dashboard')" >
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" >
+                    <x-nav-link :href="route('my-events')" >
                         {{ __('My Events') }}
                     </x-nav-link>
                     @elseif(Auth::user()->role == 'user')

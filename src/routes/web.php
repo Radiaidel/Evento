@@ -40,6 +40,14 @@ Route::get('/admin/dashboard', [AdminController::class , 'dashboard'])->name('ad
 
 
 Route::middleware(['auth', 'role:organizer'])->group(function () {
+    Route::get('/my-events',[EventController::class, 'userEvents'])->name('my-events');
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::post('/events/edit', [EventController::class, 'edit'])->name('event.edit');
+    Route::post('/events/update', [EventController::class, 'update'])->name('event.update');
+
+    Route::post('/events/delete', [EventController::class, 'delete'])->name('event.delete');
+
 });
 
 

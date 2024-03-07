@@ -11,17 +11,24 @@ class Event extends Model
 
     protected $fillable = [
         'user_id',
-        'category_id',
+        'categorie_id',
+        'image_path',
         'title',
         'description',
         'date',
         'location',
         'nb_available_places',
         'reservation_mode',
+        'price',
         'status',
     ];
     public function organizer()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+    
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
