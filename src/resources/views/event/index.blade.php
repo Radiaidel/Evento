@@ -16,7 +16,7 @@
         <a href="{{ route('event.details', $event->id) }}" class="block mb-4">
             <div class="bg-white p-4 mb-4 shadow-md rounded-lg flex">
                 <div class="w-1/2">
-                    <img src="{{ asset('storage' . $event->image_path) }}" alt="Event Image" class="w-400 h-300 object-cover rounded-lg">
+                    <img src="{{ asset('storage/' . $event->image_path) }}" alt="Event Image" class="w-full h-64 object-cover rounded-lg">
                 </div>
                 <div class="w-1/2 ml-4 flex flex-col justify-between">
                     <div>

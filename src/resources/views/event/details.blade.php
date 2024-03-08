@@ -4,14 +4,13 @@
             <!-- Partie gauche -->
             <div class="col-span-2 bg-white shadow-md rounded-lg border border-gray-200 p-6">
                 <!-- Image -->
-                <img src="{{ asset($event->image_path) }}" alt="Event Image" class="w-full rounded-lg mb-4">
+                <img src="{{ asset('storage/'.$event->image_path) }}" alt="Event Image" class="w-full  h-64 rounded-lg mb-4">
                 <h2 class="text-2xl font-semibold mb-2">{{ $event->title }}</h2>
                 <p class="mb-8">{{ $event->description }}</p>
             </div>
 
             <!-- Partie droite -->
             <div class="col-span-1">
-                <!-- Carte de l'organisateur -->
 
                 <div class="bg-white shadow-md rounded-lg border border-gray-200 p-6 mb-6">
                     <div class="flex items-center mb-4 gap-2">

@@ -11,12 +11,40 @@ class EventController extends Controller
 {
     //
 
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::paginate(4); // Fetch all events from the database
-
-        return view('dashboard', compact('events'));
+        $query = Event::query();
+        $query = $query->orderBy("created_at", "desc");
+    
+        // Filtrage par titre
+        if ($request->has('title')) {
+            $query->where('title', 'like', '%' . $request->title . '%');
+        }
+    
+        // Filtrage par catégorie
+        if ($request->has('category_id')) {
+            $query->where('categorie_id', $request->category_id);
+        }
+    
+        // Filtrage par statut
+        $query->where('status', 'accepted');
+    
+        // Récupération des événements
+        $events = $query->paginate(10);
+        $categories = Category::all();
+    
+        // Vérification si aucun terme de recherche et aucun filtre
+        if (!$request->has('title') && !$request->has('category_id')) {
+            if ($events->isEmpty()) {
+                $message = 'No events found.';
+                session()->flash('error', $message);
+            }
+        }
+    
+        return view('dashboard', compact('events', 'categories'));
     }
+    
+    
     public function pendingEvents()
     {
         $events = Event::where('status', 'pending')->get();
