@@ -11,40 +11,55 @@ class ReservationController extends Controller
 {
     public function reserve(Request $request)
     {
-        // Récupérer l'événement
-        $event = Event::findOrFail($request->event_id);
-
-        // Récupérer l'utilisateur authentifié
         $user = Auth::user();
+        $event_id = $request->input('event_id');
 
-        // Vérifier si l'utilisateur a déjà une réservation pour cet événement
-        $reservation = $user->reservations()->where('event_id', $event->id)->first();
-        
-        // Logique de réservation
-        if ($event->reservation_mode === 'auto') {
-            if ($reservation) {
-                // Si une réservation existe déjà, mettre à jour le statut si elle est acceptée
-                if ($reservation->status === 'accepted') {
-                    return redirect()->route('ticket.show', $reservation->id);
-                }
-                $reservation->update(['statut' => 'accepted']);
-            } else {
-                // Créer une nouvelle réservation avec le statut "accepted"
-                $reservation = $user->reservations()->create([
-                    'event_id' => $event->id,
-                    'statut' => 'accepted'
-                ]);
+        $existingReservation = Reservation::where('user_id', $user->id)
+            ->where('event_id', $event_id)
+            ->first();
+
+        if ($existingReservation) {
+            if ($existingReservation->statut === 'accepted') {
+                return redirect()->route('ticket.show', ['reservation' => $existingReservation->id]);
+            } elseif ($existingReservation->statut === 'pending') {
+                return redirect()->route('ticket.index');
             }
         } else {
-            // Créer une nouvelle réservation avec le statut "pending"
-            $reservation = $user->reservations()->create([
-                'event_id' => $event->id,
-                'statut' => 'pending'
-            ]);
-            return redirect()->back();
-        }
+            $reservation = new Reservation();
+            $reservation->user_id = $user->id;
+            $reservation->event_id = $event_id;
+            $reservation->numero_reservation = rand(1000, 9999);
 
-        // Rediriger vers la page du ticket avec un message de succès
-        return redirect()->route('ticket.show', $reservation->id)->with('success', 'Reservation successful!');
+            if ($request->input('mode') === 'manual') {
+                $reservation->statut = 'pending'; 
+                $reservation->save();
+
+                return redirect()->route('ticket.index');
+            } else {
+                $reservation->statut = 'accepted'; 
+                $reservation->save();
+
+                return redirect()->route('ticket.show', ['reservation' => $reservation->id]);
+            }
+        }
+    }
+
+    public function index()
+    {
+        // Récupérer tous les tickets depuis la base de données
+        $userTickets = Reservation::all();
+
+        // Charger la vue index avec les données des tickets
+        return view('ticket.index', compact('userTickets'));
+    }
+
+    // Fonction pour afficher un seul ticket
+    public function show($id)
+    {
+        // Récupérer le ticket spécifié par son ID depuis la base de données
+        $reservation = Reservation::findOrFail($id);
+
+        // Charger la vue ticket avec les détails du ticket
+        return view('ticket.show', compact('reservation'));
     }
 }

@@ -177,21 +177,28 @@
                 </div>
 
                 <!-- Bouton "Get Ticket" -->
+                @if(auth()->user()->role == 'user')
                 <div class="fixed bottom-12 right-12  rounded-full bg-red-500 py-2 text-center">
                     <form action="{{ route('event.reserve') }}" method="POST">
                         @csrf
                         <input type="hidden" name="event_id" value="{{ $event->id }}">
+                        <input type="hidden" name="mode" value="{{ $event->reservation_mode }}">
+
 
                         @if($reservationStatus === 'accepted')
-                        <button type="button" class="text-white font-semibold py-2 px-8 rounded-lg">See Ticket</button>
+                        <button type="submit" class="text-white font-semibold py-2 px-8 rounded-lg">Voir le billet</button>
                         @elseif($reservationStatus === 'pending')
-                        <button type="button" class="text-white font-semibold py-2 px-8 rounded-lg">Awaiting Ticket</button>
+                        <a href="{{ route('ticket.index') }}" class="text-white font-semibold py-2 px-8 rounded-lg">Voir les réservations</a>
+                        @elseif($availablePlaces > 0)
+                        <button type="submit" class="text-white font-semibold py-2 px-8 rounded-lg">Réserver</button>
+                        
                         @else
-                        <button type="submit" class="text-white font-semibold py-2 px-8 rounded-lg">Get Ticket</button>
+                        <p class="text-white font-semibold py-2 px-8 rounded-lg">Plus de places disponibles</p>
                         @endif
                     </form>
-                </div>
 
+                </div>
+                @endif
             </div>
         </div>
     </div>

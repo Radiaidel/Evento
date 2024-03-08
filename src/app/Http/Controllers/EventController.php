@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Category;
+use App\Models\Reservation;
 
 
 class EventController extends Controller
@@ -15,23 +16,23 @@ class EventController extends Controller
     {
         $categories = Category::all();
         $eventsQuery = Event::query();
-    
+
         // Filtre par titre
         if ($request->has('title')) {
             $eventsQuery->where('title', 'like', '%' . $request->input('title') . '%');
         }
-    
+
         // Filtre par catégorie
-        if ( $request->has('category_id') &&  $request->input('category_id') ) {
+        if ($request->has('category_id') &&  $request->input('category_id')) {
             $eventsQuery->where('categorie_id', $request->input('category_id'));
         }
-    
+        $eventsQuery->where('status', 'accepted');
         // Pagination
         $events = $eventsQuery->paginate(10);
-    
+
         return view('dashboard', compact('events', 'categories'));
     }
-    
+
 
     public function pendingEvents()
     {
@@ -60,12 +61,19 @@ class EventController extends Controller
         if (auth()->check()) {
             $user = auth()->user();
             $reservation = $user->reservations->where('event_id', $event->id)->first();
-        
+
             if ($reservation) {
                 $reservationStatus = $reservation->statut;
             }
         }
-        return view('event.details', compact('event' , 'reservationStatus'));
+        $acceptedReservationsCount = Reservation::where('event_id', $id)
+            ->where('statut', 'accepted')
+            ->count();
+
+        // Comparer avec le nombre total de places disponibles pour cet événement
+        $availablePlaces = $event->nb_available_places - $acceptedReservationsCount;
+
+        return view('event.details', compact('event', 'reservationStatus',  'availablePlaces'));
     }
 
     public function userEvents()
@@ -87,7 +95,7 @@ class EventController extends Controller
             'date' => 'required|date',
             'location' => 'required|string|max:255',
             'nb_available_places' => 'required|integer',
-            'reservation_mode' => 'required|string|in:online,offline',
+            'reservation_mode' => 'required|string|in:manual,auto',
             'price' => 'required|numeric|min:0',
             'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'categorie_id' => 'required|exists:categories,id',

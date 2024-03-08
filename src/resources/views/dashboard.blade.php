@@ -14,7 +14,7 @@
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
-                <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-blue-600 ml-2">Filter</button>
+                <button type="submit" class="bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-blue-600 ml-2">Filter</button>
             </div>
         </form>
 

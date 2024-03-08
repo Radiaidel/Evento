@@ -58,6 +58,11 @@ Route::middleware(['auth', 'role:organizer'])->group(function () {
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/events/reserve', [ReservationController::class, 'reserve'])->name('event.reserve');
+// Routes pour afficher un ticket spécifique
+Route::get('/ticket/{reservation}', [ReservationController::class, 'show'])->name('ticket.show');
+
+// Route pour afficher tous les tickets de l'utilisateur
+Route::get('/tickets', [ReservationController::class, 'index'])->name('ticket.index');
 
 });
 
