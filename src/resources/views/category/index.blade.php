@@ -3,7 +3,49 @@
         <div class="text-right mb-6">
             <button @click="isAddCategoryFormOpen = true" class="bg-red-600 text-white px-4 py-2 rounded-md">Add New Category</button>
         </div>
+        <div x-show="isAddCategoryFormOpen" id="AddCategory" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+            <div class="max-w-md mx-auto p-6 bg-white rounded-2xl shadow-md border w-3/5">
+                <div class="w-full items-center flex justify-between">
+                    <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Category</h1>
+                    <button @click="isAddCategoryFormOpen = false" class="text-gray-500 hover:text-gray-300 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <form id="addCategoryForm" method="POST" enctype="multipart/form-data" class="items-center space-y-4" action="{{ route('category.store') }}">
+                    @csrf
+                    <div class="flex flex-row space-x-4 mt-4">
+
+                        <label for="categorypicture" class="w-20 h-12 rounded-md cursor-pointer flex items-center justify-center border border-3 border-dashed  border-gray-800" id="categorypic">
+                            <svg width="35px" height="35px" viewBox="0 0 24 24" fill="none" id="plusIcon" xmlns="http://www.w3.org/2000/svg">
+
+                                <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+
+                                <g id="SVGRepo_iconCarrier">
+                                    <path d="M6 12H18M12 6V18" stroke="#898989" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+
+                            </svg>
+                        </label>
+                        <input type="file" id="categorypicture" name="categorypicture" accept="image/*" class="hidden" onchange="displayImage('categorypic','categorypicture')">
+                        <input type="text" id="categoryName" name="categoryName" placeholder="name" class="p-2 w-full border border-2 border-gray-600 rounded-md " />
+                    </div>
+
+                    <button type="submit" id="addCategoryBtn" class="w-full rounded-md m-auto text-white bg-red-600 text-sm px-5 py-2.5">Add Category</button>
+                </form>
+
+            </div>
+        </div>
+        @if($categories->isEmpty())
+        <p class="text-center mt-8">Aucune catégorie trouvé.</p>
+        @else
+
+
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
             @foreach($categories as $category)
             <div class="bg-white p-4 rounded-md shadow-md flex items-center justify-between">
                 <div class="flex items-center space-x-4">
@@ -51,44 +93,10 @@
                 </div>
             </div>
             @endforeach
+
         </div>
 
-        <div x-show="isAddCategoryFormOpen" id="AddCategory" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-            <div class="max-w-md mx-auto p-6 bg-white rounded-2xl shadow-md border w-3/5">
-                <div class="w-full items-center flex justify-between">
-                    <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Category</h1>
-                    <button @click="isAddCategoryFormOpen = false" class="text-gray-500 hover:text-gray-300 focus:outline-none">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                <form id="addCategoryForm" method="POST" enctype="multipart/form-data" class="items-center space-y-4" action="{{ route('category.store') }}">
-                    @csrf
-                    <div class="flex flex-row space-x-4 mt-4">
 
-                        <label for="categorypicture" class="w-20 h-12 rounded-md cursor-pointer flex items-center justify-center border border-3 border-dashed  border-gray-800" id="categorypic">
-                            <svg width="35px" height="35px" viewBox="0 0 24 24" fill="none" id="plusIcon" xmlns="http://www.w3.org/2000/svg">
-
-                                <g id="SVGRepo_bgCarrier" stroke-width="0" />
-
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
-
-                                <g id="SVGRepo_iconCarrier">
-                                    <path d="M6 12H18M12 6V18" stroke="#898989" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </g>
-
-                            </svg>
-                        </label>
-                        <input type="file" id="categorypicture" name="categorypicture" accept="image/*" class="hidden" onchange="displayImage('categorypic','categorypicture')">
-                        <input type="text" id="categoryName" name="categoryName" placeholder="name" class="p-2 w-full border border-2 border-gray-600 rounded-md " />
-                    </div>
-
-                    <button type="submit" id="addCategoryBtn" class="w-full rounded-md m-auto text-white bg-red-600 text-sm px-5 py-2.5">Add Category</button>
-                </form>
-
-            </div>
-        </div>
 
         <div id="EditCategory" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
             <div class="max-w-md mx-auto p-6 bg-white rounded-2xl shadow-md border w-3/5">
@@ -130,7 +138,10 @@
 
             </div>
         </div>
+        @endif
+
     </div>
+
     <script>
         function displayImage(onlabel, inInput) {
             var input = document.getElementById(inInput);

@@ -18,12 +18,12 @@ return new class extends Migration
             $table->date('date_reservation');
             $table->integer('numero_place');
             $table->integer('numero_reservation');
-            $table->integer('statut');
-
-            $table->timestamps();
+            $table->string('statut');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
+            $table->timestamps();
+
         });
     }
 

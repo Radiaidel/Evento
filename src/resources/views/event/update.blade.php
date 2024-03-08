@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="m-8 m-auto bg-white p-6 rounded-md shadow-md">
+    <div class="m-8  bg-white p-6 rounded-md shadow-md">
         <form action="{{ route('event.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

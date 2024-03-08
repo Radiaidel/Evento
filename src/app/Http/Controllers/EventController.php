@@ -13,38 +13,26 @@ class EventController extends Controller
 
     public function index(Request $request)
     {
-        $query = Event::query();
-        $query = $query->orderBy("created_at", "desc");
-    
-        // Filtrage par titre
-        if ($request->has('title')) {
-            $query->where('title', 'like', '%' . $request->title . '%');
-        }
-    
-        // Filtrage par catégorie
-        if ($request->has('category_id')) {
-            $query->where('categorie_id', $request->category_id);
-        }
-    
-        // Filtrage par statut
-        $query->where('status', 'accepted');
-    
-        // Récupération des événements
-        $events = $query->paginate(10);
         $categories = Category::all();
+        $eventsQuery = Event::query();
     
-        // Vérification si aucun terme de recherche et aucun filtre
-        if (!$request->has('title') && !$request->has('category_id')) {
-            if ($events->isEmpty()) {
-                $message = 'No events found.';
-                session()->flash('error', $message);
-            }
+        // Filtre par titre
+        if ($request->has('title')) {
+            $eventsQuery->where('title', 'like', '%' . $request->input('title') . '%');
         }
+    
+        // Filtre par catégorie
+        if ( $request->has('category_id') &&  $request->input('category_id') ) {
+            $eventsQuery->where('categorie_id', $request->input('category_id'));
+        }
+    
+        // Pagination
+        $events = $eventsQuery->paginate(10);
     
         return view('dashboard', compact('events', 'categories'));
     }
     
-    
+
     public function pendingEvents()
     {
         $events = Event::where('status', 'pending')->get();
@@ -68,13 +56,21 @@ class EventController extends Controller
     public function show($id)
     {
         $event = Event::findOrFail($id);
-
-        return view('event.details', compact('event'));
+        $reservationStatus = '';
+        if (auth()->check()) {
+            $user = auth()->user();
+            $reservation = $user->reservations->where('event_id', $event->id)->first();
+        
+            if ($reservation) {
+                $reservationStatus = $reservation->statut;
+            }
+        }
+        return view('event.details', compact('event' , 'reservationStatus'));
     }
 
     public function userEvents()
     {
-        $events = auth()->user()->events; // Récupérer les événements de l'utilisateur connecté
+        $events = auth()->user()->events;
 
         return view('event.index', compact('events'));
     }
@@ -85,7 +81,6 @@ class EventController extends Controller
     }
     public function store(Request $request)
     {
-        // Validation des données du formulaire
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -98,7 +93,6 @@ class EventController extends Controller
             'categorie_id' => 'required|exists:categories,id',
         ]);
 
-        // Enregistrement de l'événement dans la base de données
         $event = new Event();
         $event->title = $request->title;
         $event->description = $request->description;
@@ -111,7 +105,6 @@ class EventController extends Controller
         $event->user_id = auth()->user()->id;
         $event->status = 'pending';
 
-        // Enregistrement de l'image
         if ($request->hasFile('image_path')) {
             $event->image_path = $request->file('image_path')->store('events', 'public');
         }
@@ -125,50 +118,49 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($request->input('event_id'));
         $categories = Category::all();
-        return view('event.update' , compact('event' , 'categories'));
+        return view('event.update', compact('event', 'categories'));
     }
 
     public function update(Request $request)
-{
-    // Valider les données de la demande
-    $validatedData = $request->validate([
-        'title' => 'required',
-        'date' => 'required|date',
-        'description' => 'required',
-        'location' => 'required',
-        'reservation_mode' => 'required|in:auto,manual',
-        'categorie_id' => 'required|exists:categories,id',
-        'price' => 'required|numeric',
-        'nb_available_places' => 'required|integer',
-        'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+    {
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'date' => 'required|date',
+            'description' => 'required',
+            'location' => 'required',
+            'reservation_mode' => 'required|in:auto,manual',
+            'categorie_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric',
+            'nb_available_places' => 'required|integer',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    $event = Event::findOrFail($request->input('event_id'));
+        $event = Event::findOrFail($request->input('event_id'));
 
-    $event->title = $validatedData['title'];
-    $event->date = $validatedData['date'];
-    $event->description = $validatedData['description'];
-    $event->location = $validatedData['location'];
-    $event->reservation_mode = $validatedData['reservation_mode'];
-    $event->categorie_id = $validatedData['categorie_id'];
-    $event->price = $validatedData['price'];
-    $event->nb_available_places = $validatedData['nb_available_places'];
-    $event->status ='pending';
+        $event->title = $validatedData['title'];
+        $event->date = $validatedData['date'];
+        $event->description = $validatedData['description'];
+        $event->location = $validatedData['location'];
+        $event->reservation_mode = $validatedData['reservation_mode'];
+        $event->categorie_id = $validatedData['categorie_id'];
+        $event->price = $validatedData['price'];
+        $event->nb_available_places = $validatedData['nb_available_places'];
+        $event->status = 'pending';
 
-    if ($request->hasFile('image_path')) {
-        $imagePath = $request->file('image_path')->store('images', 'public');
-        $event->image_path = $imagePath;
+        if ($request->hasFile('image_path')) {
+            $imagePath = $request->file('image_path')->store('images', 'public');
+            $event->image_path = $imagePath;
+        }
+
+        $event->save();
+
+        return redirect()->route('my-events', $event->id)->with('success', 'Event updated successfully');
     }
 
-    $event->save();
-
-    return redirect()->route('my-events', $event->id)->with('success', 'Event updated successfully');
-}
-
-public function delete(Request $request){
-    $event = Event::findOrFail($request->input('event_id'));
-    $event->delete();
-    return redirect()->route('my-events', $event->id)->with('success', 'Event deleted successfully');
-}
-
+    public function delete(Request $request)
+    {
+        $event = Event::findOrFail($request->input('event_id'));
+        $event->delete();
+        return redirect()->route('my-events', $event->id)->with('success', 'Event deleted successfully');
+    }
 }

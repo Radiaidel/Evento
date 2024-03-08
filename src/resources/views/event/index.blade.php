@@ -10,7 +10,7 @@
         </div>
         @endif
         @if ($events->isEmpty())
-        <p class="text-center text-gray-700">You have no events yet.</p>
+        <p class="text-center text-gray-700">no events yet.</p>
         @else
         @foreach ($events as $event)
         <a href="{{ route('event.details', $event->id) }}" class="block mb-4">

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class=" m-8 m-auto bg-white p-6 rounded-md shadow-md">
+    <div class="m-8 bg-white p-6 rounded-md shadow-md ">
     <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data" >
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -24,8 +24,8 @@
             <div>
                 <label for="reservation_mode" class="block text-gray-700 font-bold mb-2">Reservation Mode:</label>
                 <select name="reservation_mode" id="reservation_mode" required class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
-                    <option value="online">Online</option>
-                    <option value="offline">Offline</option>
+                    <option value="auto">auto</option>
+                    <option value="manual">manual</option>
                 </select>
             </div>
             </div>

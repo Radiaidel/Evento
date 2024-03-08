@@ -11,7 +11,7 @@
                 <select name="category_id" class="w-3/4 border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
                     <option value="">Select Category</option>
                     @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
                 <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-blue-600 ml-2">Filter</button>
@@ -19,7 +19,9 @@
         </form>
 
         <div class="grid grid-cols-1 gap-4">
-
+            @if($events->isEmpty())
+            <p class="text-center mt-8">Aucun evenement trouvé.</p>
+            @endif
             @foreach ($events as $event)
             <a href="{{ route('event.details', $event->id) }}" class="block mb-4">
                 <div class="bg-white p-4 mb-4 shadow-md rounded-lg flex">
@@ -30,7 +32,7 @@
                         <div>
                             <div class="flex items-center mt-2 justify-between">
                                 <h2 class="text-lg font-semibold">{{ $event->title }}</h2>
-                    
+
                             </div>
                             <p>{{ substr($event->description, 0, 700) }}</p>
                             <div class="flex mt-2 space-between">
@@ -241,6 +243,6 @@
                 </div>
             </a>
             @endforeach
-@endif
+            @endif
         </div>
 </x-app-layout>

@@ -5,6 +5,8 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ReservationController;
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +57,8 @@ Route::middleware(['auth', 'role:organizer'])->group(function () {
 
 
 Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::post('/events/reserve', [ReservationController::class, 'reserve'])->name('event.reserve');
+
 });
 
 
