@@ -2,19 +2,21 @@
     <div class="m-8">
         @if(auth()->user()->role == 'admin')
         @include('admin_dashboard')
+        @elseif(auth()->user()->role == 'organizer')
+        @include('organizer_dashboard')
         @else
-        <form action="{{ route('dashboard') }}" method="GET" class="mb-4 flex justify-between items-center">
+        <form action="{{ route('dashboard') }}" method="GET" class="w-full  mb-4 flex justify-center items-center">
             <div class="w-1/2 mr-4">
                 <input type="text" name="title" placeholder="Search by title" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
             </div>
-            <div class="w-1/2">
-                <select name="category_id" class="w-3/4 border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+            <div class="w-1/2 flex justify-end items-center">
+                <select name="category_id" class="w-1/4 border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
                     <option value="">Select Category</option>
                     @foreach($categories as $category)
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
-                <button type="submit" class="bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-blue-600 ml-2">Filter</button>
+                <button type="submit" class="bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:bg-RED-600 ml-2">Filter</button>
             </div>
         </form>
 
@@ -243,6 +245,9 @@
                 </div>
             </a>
             @endforeach
+            <div class="pagination">
+                {{ $events->links() }}
+            </div>
             @endif
         </div>
 </x-app-layout>

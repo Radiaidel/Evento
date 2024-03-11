@@ -5,6 +5,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\ReservationController;
 
 
@@ -27,7 +28,7 @@ Route::get('/', function () {
 
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-Route::get('/admin/dashboard', [AdminController::class , 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
     Route::post('/categories', [CategoryController::class, 'store'])->name('category.store');
     Route::delete('/categories/{id}',  [CategoryController::class, 'destroy'])->name('categories.destroy');
@@ -42,14 +43,16 @@ Route::get('/admin/dashboard', [AdminController::class , 'dashboard'])->name('ad
 
 
 Route::middleware(['auth', 'role:organizer'])->group(function () {
-    Route::get('/my-events',[EventController::class, 'userEvents'])->name('my-events');
+    Route::get('/organizer/dashbord', [OrganizerController::class, 'index'])->name('organizer.dashboard');
+    Route::get('/my-events', [EventController::class, 'userEvents'])->name('my-events');
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::post('/events/edit', [EventController::class, 'edit'])->name('event.edit');
     Route::post('/events/update', [EventController::class, 'update'])->name('event.update');
-
     Route::post('/events/delete', [EventController::class, 'delete'])->name('event.delete');
-
+    Route::get('/reservations', [ReservationController::class, 'organizerReservations'])->name('organizer.reservations');
+    Route::post('/reservation/accept', [ReservationController::class, 'accept'])->name('reservation.accept');
+    Route::post('/reservation/reject', [ReservationController::class, 'reject'])->name('reservation.reject');
 });
 
 
@@ -58,12 +61,12 @@ Route::middleware(['auth', 'role:organizer'])->group(function () {
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/events/reserve', [ReservationController::class, 'reserve'])->name('event.reserve');
-// Routes pour afficher un ticket spécifique
-Route::get('/ticket/{reservation}', [ReservationController::class, 'show'])->name('ticket.show');
+    // Routes pour afficher un ticket spécifique
+    Route::get('/ticket/{reservation}', [ReservationController::class, 'show'])->name('ticket.show');
 
-// Route pour afficher tous les tickets de l'utilisateur
-Route::get('/tickets', [ReservationController::class, 'index'])->name('ticket.index');
-
+    // Route pour afficher tous les tickets de l'utilisateur
+    Route::get('/tickets', [ReservationController::class, 'index'])->name('ticket.index');
+    Route::get('/events', [EventController::class, 'index'])->name('dashboard');
 });
 
 
@@ -75,10 +78,6 @@ Route::get('/tickets', [ReservationController::class, 'index'])->name('ticket.in
 
 Route::middleware('auth')->group(function () {
     Route::get('/events/{id}', [EventController::class, 'show'])->name('event.details');
-    Route::get('/events', [EventController::class, 'index'])->name('dashboard');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__ . '/auth.php';

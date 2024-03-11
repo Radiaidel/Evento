@@ -13,35 +13,38 @@
                 <!-- Navigation Links -->
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                   
+
                     <!-- Ajouter d'autres liens de navigation selon les besoins -->
                     @if(Auth::user()->role == 'admin')
-                    
-                    <x-nav-link :href="route('admin.dashboard')" >
+
+                    <x-nav-link :href="route('admin.dashboard')" class="text-gray-800 hover:text-blue-600">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('category.index')" >
+                    <x-nav-link :href="route('category.index')" class="text-gray-800 hover:text-blue-600">
                         {{ __('Categories') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('users.index')" >
-                        {{ __('Users') }}
+                    <x-nav-link :href="route('users.index')" class="text-gray-800 hover:text-blue-600">
+                        {{ __('Utilisateurs') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('events.pending')" >
-                        {{ __('Events') }}
+                    <x-nav-link :href="route('events.pending')" class="text-gray-800 hover:text-blue-600">
+                        {{ __('Evénements') }}
                     </x-nav-link>
                     @elseif(Auth::user()->role == 'organizer')
-                    <x-nav-link :href="route('dashboard')" >
+                    <x-nav-link :href="route('organizer.dashboard')" class="text-gray-800 hover:text-blue-600">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('my-events')" >
-                        {{ __('My Events') }}
+                    <x-nav-link :href="route('my-events')" class="text-gray-800 hover:text-blue-600">
+                        {{ __('Mes événements') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('organizer.reservations')" class="text-gray-800 hover:text-blue-600">
+                        {{ __('Reservations') }}
                     </x-nav-link>
                     @elseif(Auth::user()->role == 'user')
-                    <x-nav-link :href="route('dashboard')" >
+                    <x-nav-link :href="route('dashboard')" class="text-gray-800 hover:text-blue-600">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('ticket.index')" >
-                        {{ __('My tickets') }}
+                    <x-nav-link :href="route('ticket.index')" class="text-gray-800 hover:text-blue-600">
+                        {{ __('Mes tickets') }}
                     </x-nav-link>
                     @endif
                 </div>
@@ -52,9 +55,11 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
 
-                            <div class="ms-1">
+                            <div class="ms-1 flex items-center ">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden">
+                                    <img class="h-full w-full object-cover" src="{{ asset('storage/'.Auth::user()->profile_photo) }}" alt="{{ Auth::user()->name }}" />
+                                </div>
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
@@ -63,17 +68,14 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
+                                                this.closest('form').submit();" class="text-gray-800 hover:text-blue-600">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
@@ -96,30 +98,56 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            @if(Auth::user()->role == 'admin')
+            <x-responsive-nav-link :href="route('admin.dashboard')" class="text-gray-800 hover:text-blue-600">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('category.index')" class="text-gray-800 hover:text-blue-600">
+                {{ __('Categories') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('users.index')" class="text-gray-800 hover:text-blue-600">
+                {{ __('Utilisateurs') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('events.pending')" class="text-gray-800 hover:text-blue-600">
+                {{ __('Evénements') }}
+            </x-responsive-nav-link>
+            @elseif(Auth::user()->role == 'organizer')
+            <x-responsive-nav-link :href="route('organizer.dashboard')" class="text-gray-800 hover:text-blue-600">
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('my-events')" class="text-gray-800 hover:text-blue-600">
+                {{ __('Mes événements') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('organizer.reservations')" class="text-gray-800 hover:text-blue-600">
+                {{ __('Reservations') }}
+            </x-responsive-nav-link>
+
+            @elseif(Auth::user()->role == 'user')
+            <x-responsive-nav-link :href="route('dashboard')" class="text-gray-800 hover:text-blue-600">
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('ticket.index')" class="text-gray-800 hover:text-blue-600">
+                {{ __('Mes tickets') }}
+            </x-responsive-nav-link>
+            @endif
+
+
         </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
+        
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
+            <div class="space-y-1">
+               
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
+                                        this.closest('form').submit();" class="text-gray-800 hover:text-blue-600">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>

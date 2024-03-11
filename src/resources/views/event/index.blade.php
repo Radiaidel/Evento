@@ -214,6 +214,7 @@
 
                                 </svg></button>
                         </form>
+                        @if($event->status === 'pending')
                         <form action="{{ route('event.delete') }}" method="POST" class="inline">
                             @csrf
                             <input type="hidden" name="event_id" value="{{$event->id}}">
@@ -233,6 +234,7 @@
 
                                 </svg></button>
                         </form>
+                        @endif
                     </div>
                     @endif
                 </div>

@@ -20,7 +20,7 @@
                 
                 <div>
                     <label for="date" class="block text-gray-700 font-bold mb-2">Date:</label>
-                    <input type="date" value="{{ $event->date }}" name="date" id="date" required class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+                    <input type="datetime-local" value="{{ $event->date }}" id="date" name="date" min="{{ date('Y-m-d\TH:i', strtotime('+1 minute')) }}"class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"  required>
                 </div>
                 <div>
                     <label for="description" class="block text-gray-700 font-bold mb-2">Description:</label>

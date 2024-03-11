@@ -824,15 +824,87 @@
                 padding: 2rem
             }
         }
+
+        .welcome-text {
+            font-weight: 900;
+            font-size: 5rem;
+            color: #333;
+            /* Couleur de texte plus sombre */
+            text-align: center;
+        }
+
+        span {
+            color: #FF0000;
+        }
+
+        /* Style du slogan */
+        h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            /* Couleur de texte plus sombre */
+        }
+
+        /* Style du message d'accueil */
+        p {
+            font-size: 1.25rem;
+            color: #333;
+            /* Couleur de texte plus sombre */
+        }
+
+        /* Style du lien "Explorez maintenant" */
+        a {
+            display: inline-block;
+            background-color: #FF0000;
+            /* Rouge */
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            /* Ajustez le rembourrage selon vos besoins */
+            border-radius: 0.5rem;
+            /* Pour arrondir les coins */
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            /* Transition fluide de la couleur de fond */
+        }
+
+        /* Au survol, assombrir légèrement la couleur de fond */
+        a:hover {
+            background-color: #CC0000;
+            /* Rouge légèrement plus foncé */
+        }
     </style>
 </head>
 
 <body class="antialiased" style="background-image: url('https://bitesizebio.com/wp-content/uploads/2021/01/abstract-blurred-event-exhibition-with-people-background-business-convention-show-concept-1.jpg'); background-size: cover;">
     <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
+        <div class="max-w-4xl mx-auto px-4 py-4 text-center">
+            <!-- Logo -->
+            <h1 class="welcome-text">Bienvenue sur <span class="font-bold ">Evento</span></h1><!-- Slogan -->
+
+            <!-- Message d'accueil -->
+            <p class="text-lg text-white mt-4">Découvrez les meilleurs événements près de chez vous et créez des souvenirs inoubliables.</p>
+
+            <!-- Call to Action -->
+            <div class="mt-6">
+                <a href="#" class="inline-block bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">Explorez maintenant</a>
+            </div>
+        </div>
+
+
+        <!-- Auth Links -->
         @if (Route::has('login'))
         <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
             @auth
+            @if (auth()->user()->role == 'admin')
             <a href="{{ route('admin.dashboard') }}" class="font-semibold text-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500" style="color:white;">Dashboard</a>
+
+            @elseif (auth()->user()->role == 'organizer')
+            <a href="{{ route('organizer.dashboard') }}" class="font-semibold text-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500" style="color:white;">Dashboard</a>
+
+            @else
+            <a href="{{ route('dashboard') }}" class="font-semibold text-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500" style="color:white;">Dashboard</a>
+            @endif
             @else
             <a href="{{ route('login') }}" class="font-semibold text-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500" style="color: white; background-color: red; padding: 10px 20px; border-radius: 5px;">Log in</a>
 
@@ -842,10 +914,7 @@
             @endauth
         </div>
         @endif
-
-
     </div>
-
 </body>
 
 </html>

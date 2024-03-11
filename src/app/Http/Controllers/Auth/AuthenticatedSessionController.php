@@ -39,6 +39,9 @@ class AuthenticatedSessionController extends Controller
         if ($user->role == 'admin') {
             return redirect()->route('admin.dashboard');
         }
+        if ($user->role == 'organizer') {
+            return redirect()->route('organizer.dashboard');
+        }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

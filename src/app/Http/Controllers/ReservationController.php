@@ -29,37 +29,82 @@ class ReservationController extends Controller
             $reservation->user_id = $user->id;
             $reservation->event_id = $event_id;
             $reservation->numero_reservation = rand(1000, 9999);
+            $reservation->event_id = $event_id;
+            $reservation->statut = 'pending';
 
             if ($request->input('mode') === 'manual') {
-                $reservation->statut = 'pending'; 
                 $reservation->save();
-
-                return redirect()->route('ticket.index');
+                return redirect()->route('ticket.index', ['reservation' => $reservation->id]);
             } else {
-                $reservation->statut = 'accepted'; 
+                $nextPlaceNumber = Reservation::where('event_id', $event_id)
+                    ->where('statut', 'accepted')
+                    ->count() + 1;
+
+                $reservation->numero_place = $nextPlaceNumber;
+                $reservation->statut = 'accepted';
                 $reservation->save();
 
                 return redirect()->route('ticket.show', ['reservation' => $reservation->id]);
             }
         }
     }
-
     public function index()
     {
-        // Récupérer tous les tickets depuis la base de données
-        $userTickets = Reservation::all();
+        $user = Auth::user();
+        $userTickets = $user->reservations;
 
-        // Charger la vue index avec les données des tickets
         return view('ticket.index', compact('userTickets'));
     }
 
-    // Fonction pour afficher un seul ticket
     public function show($id)
     {
-        // Récupérer le ticket spécifié par son ID depuis la base de données
         $reservation = Reservation::findOrFail($id);
 
-        // Charger la vue ticket avec les détails du ticket
         return view('ticket.show', compact('reservation'));
+    }
+    public function organizerReservations()
+    {
+        $userId = auth()->id();
+
+        $pendingReservations = Reservation::whereHas('event', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->where('statut', 'pending')->get();
+
+        return view('ticket.reservations', compact('pendingReservations'));
+    }
+
+
+    public function accept(Request $request)
+    {
+        $reservationId = $request->input('reservation_id');
+        $reservation = Reservation::findOrFail($reservationId);
+
+        $availablePlaces = $reservation->event->nb_places - $reservation->event->reservations()->accepted()->count();
+        if ($availablePlaces <= 0) {
+            $reservation->statut = 'rejected';
+            $reservation->save();
+            return redirect()->back()->with('error', 'Désolé, il n\'y a plus de places disponibles pour cet événement.');
+        }
+
+        $nextPlaceNumber = Reservation::where('event_id', $reservation->event_id)
+            ->where('statut', 'accepted')
+            ->count() + 1;
+
+        $reservation->numero_place = $nextPlaceNumber;
+        $reservation->statut = 'accepted';
+        $reservation->save();
+
+        return redirect()->back()->with('success', 'La réservation a été acceptée avec succès.');
+    }
+
+    public function reject(Request $request)
+    {
+        $reservationId = $request->input('reservation_id');
+        $reservation = Reservation::findOrFail($reservationId);
+
+        $reservation->statut = 'rejected';
+        $reservation->save();
+
+        return redirect()->back();
     }
 }

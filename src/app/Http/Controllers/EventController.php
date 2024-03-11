@@ -17,18 +17,15 @@ class EventController extends Controller
         $categories = Category::all();
         $eventsQuery = Event::query();
 
-        // Filtre par titre
         if ($request->has('title')) {
             $eventsQuery->where('title', 'like', '%' . $request->input('title') . '%');
         }
 
-        // Filtre par catégorie
         if ($request->has('category_id') &&  $request->input('category_id')) {
             $eventsQuery->where('categorie_id', $request->input('category_id'));
         }
-        $eventsQuery->where('status', 'accepted');
-        // Pagination
-        $events = $eventsQuery->paginate(10);
+        $eventsQuery->where('status', 'accepted')->OrderBy('created_at','desc');
+        $events = $eventsQuery->paginate(2);
 
         return view('dashboard', compact('events', 'categories'));
     }

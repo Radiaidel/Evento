@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="container mx-auto py-8">
+    <div class="container mx-auto p-8">
         <!-- Cartes pour les statistiques -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <!-- Total Users -->
